@@ -8,6 +8,7 @@ import { ReactSortable } from "react-sortablejs";
 import { cast } from "ts-safe-cast";
 
 import { fetchDropboxFiles, ResponseDropboxFile, uploadDropboxFile } from "$app/data/dropbox_upload";
+import { useDropboxDropins } from "$app/hooks/useDropboxDropins";
 import { type Post } from "$app/types/workflow";
 import { escapeRegExp } from "$app/utils";
 import { assertDefined } from "$app/utils/assert";
@@ -92,8 +93,19 @@ export const extensions = (productId: string, extraExtensions: TiptapNode[] = []
 ];
 
 const ContentTabContent = ({ selectedVariantId }: { selectedVariantId: string | null }) => {
-  const { id, product, updateProduct, seller, save, existingFiles, setExistingFiles, uniquePermalink, filesById } =
-    useProductEditContext();
+  const {
+    id,
+    product,
+    updateProduct,
+    seller,
+    save,
+    existingFiles,
+    setExistingFiles,
+    uniquePermalink,
+    filesById,
+    dropboxAppKey,
+  } = useProductEditContext();
+  const { choose: dropboxChoose, isLoaded: isDropboxLoaded } = useDropboxDropins(dropboxAppKey);
   const uid = React.useId();
   const isDesktop = useIsAboveBreakpoint("lg");
   const imageSettings = useImageUploadSettings();
@@ -211,6 +223,7 @@ const ContentTabContent = ({ selectedVariantId }: { selectedVariantId: string | 
     variantId: selectedVariantId,
     prepareDownload: save,
     filesById,
+    dropboxAppKey,
   });
   const fileEmbedConfig = useRefToLatest<FileEmbedConfig>({ filesById });
   const uploadFilesRef = useRefToLatest(uploadFiles);
@@ -410,7 +423,7 @@ const ContentTabContent = ({ selectedVariantId }: { selectedVariantId: string | 
       window.___dropbox_files_picked = null;
       return;
     }
-    window.Dropbox.choose({ linkType: "direct", multiselect: true, success: (files) => void uploadFiles(files) });
+    dropboxChoose({ linkType: "direct", multiselect: true, success: (files) => void uploadFiles(files) });
   };
   React.useEffect(() => {
     const interval = setInterval(
@@ -517,10 +530,12 @@ const ContentTabContent = ({ selectedVariantId }: { selectedVariantId: string | 
                           <span>Existing product files</span>
                         </div>
                       ) : null}
-                      <div role="menuitem" onClick={uploadFromDropbox}>
-                        <Icon name="dropbox" />
-                        <span>Dropbox files</span>
-                      </div>
+                      {isDropboxLoaded ? (
+                        <div role="menuitem" onClick={uploadFromDropbox}>
+                          <Icon name="dropbox" />
+                          <span>Dropbox files</span>
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </PopoverMenuItem>

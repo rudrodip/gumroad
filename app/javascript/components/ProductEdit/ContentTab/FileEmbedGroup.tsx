@@ -7,6 +7,7 @@ import * as React from "react";
 import { cast } from "ts-safe-cast";
 
 import { getFolderArchiveDownloadUrl, getProductFileDownloadInfos } from "$app/data/products";
+import { useDropboxDropins } from "$app/hooks/useDropboxDropins";
 import { isTuple } from "$app/utils/array";
 import { classNames } from "$app/utils/classNames";
 import GuidGenerator from "$app/utils/guid_generator";
@@ -35,6 +36,7 @@ type FileGroupConfig = {
   variantId: string | null;
   prepareDownload: () => Promise<void>;
   filesById: Map<string, FileEntry>;
+  dropboxAppKey: string | null;
 };
 type FileEmbedGroupStorage = { lastCreatedUid: string | null };
 
@@ -62,6 +64,7 @@ const FileEmbedGroupNodeView = ({
   extension,
   selected,
 }: NodeViewProps & { config: FileGroupConfig }) => {
+  const { save: dropboxSave, isLoaded: isDropboxLoaded } = useDropboxDropins(config.dropboxAppKey);
   const [expanded, setExpanded] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
   const [editing, setEditing] = React.useState(false);
@@ -128,7 +131,7 @@ const FileEmbedGroupNodeView = ({
           product_file_ids: downloadableFiles.map((file) => file.id),
         }),
       );
-      if (fileDownloadInfos.length > 0) Dropbox.save({ files: fileDownloadInfos });
+      if (fileDownloadInfos.length > 0) dropboxSave({ files: fileDownloadInfos });
     } catch (e) {
       assertResponseError(e);
       showAlert(e.message, "error");
@@ -201,10 +204,12 @@ const FileEmbedGroupNodeView = ({
                     ) : (
                       <Button onClick={() => void download()}>Download as ZIP</Button>
                     )}
-                    <Button disabled={downloading} onClick={() => void saveToDropbox()}>
-                      <Icon name="dropbox" />
-                      Save to Dropbox
-                    </Button>
+                    {isDropboxLoaded ? (
+                      <Button disabled={downloading} onClick={() => void saveToDropbox()}>
+                        <Icon name="dropbox" />
+                        Save to Dropbox
+                      </Button>
+                    ) : null}
                   </div>
                 </Popover>
               ) : null}
