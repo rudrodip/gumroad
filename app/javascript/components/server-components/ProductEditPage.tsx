@@ -2,8 +2,7 @@ import { DirectUpload } from "@rails/activestorage";
 import isEqual from "lodash/isEqual";
 import * as React from "react";
 import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
-import { StaticRouterProvider } from "react-router-dom/server";
-import { cast, createCast } from "ts-safe-cast";
+import { cast } from "ts-safe-cast";
 
 import { saveProduct } from "$app/data/product_edit";
 import { OtherRefundPolicy } from "$app/data/products/other_refund_policies";
@@ -13,7 +12,6 @@ import { CurrencyCode } from "$app/utils/currency";
 import { Taxonomy } from "$app/utils/discover";
 import { ALLOWED_EXTENSIONS } from "$app/utils/file";
 import { assertResponseError, request } from "$app/utils/request";
-import { buildStaticRouter, GlobalProps, register } from "$app/utils/serverComponentUtil";
 
 import { Seller } from "$app/components/Product";
 import { ContentTab } from "$app/components/ProductEdit/ContentTab";
@@ -84,6 +82,7 @@ type Props = {
   seller_refund_policy_enabled: boolean;
   seller_refund_policy: Pick<RefundPolicy, "title" | "fine_print">;
   cancellation_discounts_enabled: boolean;
+  dropbox_app_key: string | null;
 };
 
 const createContextValue = (props: Props) => ({
@@ -117,6 +116,7 @@ const createContextValue = (props: Props) => ({
   seller_refund_policy_enabled: props.seller_refund_policy_enabled,
   seller_refund_policy: props.seller_refund_policy,
   cancellationDiscountsEnabled: props.cancellation_discounts_enabled,
+  dropboxAppKey: props.dropbox_app_key,
   contentUpdates: null,
   setContentUpdates: () => {},
   filesById: new Map(props.product.files.map((file) => [file.id, { ...file, url: getDownloadUrl(props.id, file) }])),
@@ -250,20 +250,5 @@ const ProductEditPage = (props: Props) => {
   );
 };
 
-const ProductEditRouter = async (global: GlobalProps) => {
-  const { router, context } = await buildStaticRouter(global, routes);
-  const component = (props: Props) => (
-    <ProductEditContext.Provider
-      value={{
-        ...createContextValue(props),
-        setCurrencyType: (_currency) => {}, // no-op
-      }}
-    >
-      <StaticRouterProvider router={router} context={context} nonce={global.csp_nonce} />
-    </ProductEditContext.Provider>
-  );
-  component.displayName = "ProductEditRouter";
-  return component;
-};
-
-export default register({ component: ProductEditPage, ssrComponent: ProductEditRouter, propParser: createCast() });
+export type { Props };
+export default ProductEditPage;

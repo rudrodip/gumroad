@@ -31,7 +31,7 @@ class LinksController < ApplicationController
   before_action :fetch_product_and_enforce_ownership, only: %i[destroy]
   before_action :fetch_product_and_enforce_access, only: %i[update publish unpublish release_preorder update_sections]
 
-  layout "inertia", only: [:index, :new]
+  layout "inertia", only: [:index, :new, :edit]
 
   def index
     authorize Link
@@ -328,8 +328,10 @@ class LinksController < ApplicationController
     redirect_to bundle_path(@product.external_id) if @product.is_bundle?
 
     @title = @product.name
-
     @presenter = ProductPresenter.new(product: @product, pundit_user:)
+
+    render inertia: "Products/Edit",
+           props: { edit_props: @presenter.edit_props }
   end
 
   def update
