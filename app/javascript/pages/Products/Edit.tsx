@@ -1,6 +1,6 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { DirectUpload } from "@rails/activestorage";
-import isEqual from "lodash/isEqual";
+import { isEqual } from "lodash-es";
 import * as React from "react";
 import { cast } from "ts-safe-cast";
 
