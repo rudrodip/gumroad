@@ -142,6 +142,7 @@ function Edit() {
         newlyAdded ? { ...availability, id: null } : availability,
       ),
       installment_plan: filteredProduct.allow_installment_plan ? filteredProduct.installment_plan : null,
+      current_tab,
     }));
 
     return new Promise<void>((resolve, reject) => {

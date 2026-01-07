@@ -439,7 +439,7 @@ class LinksController < ApplicationController
         error_message = @product.errors.full_messages.first || e.message
       end
       if request.inertia?
-        redirect_to edit_link_path(@product.unique_permalink), inertia: { errors: { base: [error_message] } }, alert: error_message
+        redirect_to edit_link_tab_path(@product.unique_permalink), inertia: { errors: { base: [error_message] } }, alert: error_message
       else
         return render json: { error_message: }, status: :unprocessable_entity
       end
@@ -469,14 +469,14 @@ class LinksController < ApplicationController
 
       if request.inertia?
         flash[:warning] = warning_message
-        return redirect_to edit_link_path(@product.unique_permalink), status: :see_other
+        return redirect_to edit_link_tab_path(@product.unique_permalink), status: :see_other
       else
         return render json: { warning_message: }
       end
     end
 
     if request.inertia?
-      redirect_to edit_link_path(@product.unique_permalink), status: :see_other
+      redirect_to edit_link_tab_path(@product.unique_permalink), status: :see_other
     else
       head :no_content
     end
@@ -559,6 +559,19 @@ class LinksController < ApplicationController
   end
 
   private
+    def edit_link_tab_path(permalink)
+      case params[:current_tab]
+      when "content"
+        edit_link_content_path(permalink)
+      when "receipt"
+        edit_link_receipt_path(permalink)
+      when "share"
+        edit_link_share_path(permalink)
+      else
+        edit_link_path(permalink)
+      end
+    end
+
     def fetch_product_for_show
       fetch_product_by_custom_domain || fetch_product_by_general_permalink
     end

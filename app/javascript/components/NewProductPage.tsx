@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import cx from "classnames";
 import hands from "images/illustrations/hands.png";
 import * as React from "react";
@@ -205,7 +205,7 @@ const NewProductPage = ({
           redirectTo = `${redirectTo}#ai-generated`;
         }
 
-        window.location.href = redirectTo;
+        router.visit(redirectTo);
       } else {
         showAlert(responseData.error_message, "error");
       }
