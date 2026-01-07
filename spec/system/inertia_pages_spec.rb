@@ -43,14 +43,14 @@ RSpec.describe "Inertia Pages", type: :system, js: true do
       # Wait for page to load
       expect(page).to have_text("Test Product", wait: 10)
 
-      # Check for tab links - these are rendered by react-router-dom Link components
+      # Check for tab links - these are rendered by Inertia Link components
       expect(page).to have_css("a", text: "Product")
       expect(page).to have_css("a", text: "Content")
       expect(page).to have_css("a", text: "Share")
       expect(page).to have_css("a", text: "Receipt")
     end
 
-    it "navigates between tabs using client-side routing" do
+    it "navigates between tabs using Inertia routing" do
       visit edit_link_path(product.unique_permalink)
 
       # Wait for page to load

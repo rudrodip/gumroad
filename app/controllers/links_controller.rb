@@ -329,9 +329,14 @@ class LinksController < ApplicationController
 
     @title = @product.name
     @presenter = ProductPresenter.new(product: @product, pundit_user:)
+    @current_tab = params[:tab] || "product"
 
     render inertia: "Products/Edit",
-           props: { edit_props: @presenter.edit_props }
+           props: {
+             edit_props: @presenter.edit_props,
+             dropbox_app_key: DROPBOX_PICKER_API_KEY,
+             current_tab: @current_tab
+           }
   end
 
   def update
@@ -433,7 +438,12 @@ class LinksController < ApplicationController
       else
         error_message = @product.errors.full_messages.first || e.message
       end
-      return render json: { error_message: }, status: :unprocessable_entity
+      if request.inertia?
+        redirect_to edit_link_path(@product.unique_permalink), inertia: { errors: { base: [error_message] } }, alert: error_message
+      else
+        return render json: { error_message: }, status: :unprocessable_entity
+      end
+      return
     end
     invalid_currency_offer_codes = @product.product_and_universal_offer_codes.reject do |offer_code|
       offer_code.is_currency_valid?(@product)
@@ -455,12 +465,21 @@ class LinksController < ApplicationController
         issue_description = "#{all_invalid_offer_codes.count > 1 ? "discount" : "discounts"} this product below #{@product.min_price_formatted}, but not to #{MoneyFormatter.format(0, @product.price_currency_type.to_sym, no_cents_if_whole: true, symbol: true)}"
       end
 
-      return render json: {
-        warning_message: "The following offer #{"code".pluralize(all_invalid_offer_codes.count)} #{issue_description}: #{all_invalid_offer_codes.join(", ")}. Please update #{all_invalid_offer_codes.length > 1 ? "them or they" : "it or it"} will not work at checkout."
-      }
+      warning_message = "The following offer #{"code".pluralize(all_invalid_offer_codes.count)} #{issue_description}: #{all_invalid_offer_codes.join(", ")}. Please update #{all_invalid_offer_codes.length > 1 ? "them or they" : "it or it"} will not work at checkout."
+
+      if request.inertia?
+        flash[:warning] = warning_message
+        return redirect_to edit_link_path(@product.unique_permalink), status: :see_other
+      else
+        return render json: { warning_message: }
+      end
     end
 
-    head :no_content
+    if request.inertia?
+      redirect_to edit_link_path(@product.unique_permalink), status: :see_other
+    else
+      head :no_content
+    end
   end
 
   def unpublish
