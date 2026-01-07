@@ -38,17 +38,6 @@ const loadDropboxScript = (appKey: string): Promise<void> => {
   return loadPromise;
 };
 
-/**
- * Hook to load and use Dropbox Drop-ins (Chooser/Saver).
- *
- * @param appKey - The Dropbox app key from inertia shared props
- * @returns Object with:
- *   - isLoaded: boolean indicating if the script is ready
- *   - isLoading: boolean indicating if the script is currently loading
- *   - error: Error if loading failed
- *   - choose: Function to open the Dropbox Chooser
- *   - save: Function to open the Dropbox Saver
- */
 export function useDropboxDropins(appKey: string | null | undefined) {
   const [isLoaded, setIsLoaded] = React.useState(
     typeof window !== "undefined" && "Dropbox" in window
