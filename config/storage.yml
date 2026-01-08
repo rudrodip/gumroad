@@ -7,6 +7,7 @@ test:
   bucket: <%= PUBLIC_STORAGE_S3_BUCKET %>
   public: true
   force_path_style: true
+  ssl_verify_peer: false
 
 local:
   service: Disk
@@ -22,6 +23,7 @@ development:
   bucket: <%= PUBLIC_STORAGE_S3_BUCKET %>
   public: true
   force_path_style: true
+  ssl_verify_peer: false
 
 # Use rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 amazon:
