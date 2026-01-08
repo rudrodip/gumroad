@@ -5,7 +5,7 @@ http_interactions:
     uri: https://api.stripe.com/v1/accounts
     body:
       encoding: UTF-8
-      string: type=custom&requested_capabilities[0]=card_payments&requested_capabilities[1]=transfers&country=GI&default_currency=gbp&metadata[user_id]=3120150362011&metadata[tos_agreement_id]=VBytlR5AAJJCfZSRD4047w%3D%3D&metadata[user_compliance_info_id]=zQg9hyW7mqTCv-yvGCQVGQ%3D%3D&metadata[bank_account_id]=qApQX0_oiSqHvKWs2DNxLA%3D%3D&tos_acceptance[date]=1427846400&tos_acceptance[ip]=54.234.242.13&business_type=individual&business_profile[name]=Chuck+Bartowski&business_profile[url]=https%3A%2F%2Fvipul.gumroad.com%2F&business_profile[product_description]=Chuck+Bartowski&individual[first_name]=Chuck&individual[last_name]=Bartowski&individual[email]=chuck%40gum.com&individual[phone]=0000000000&individual[dob][day]=1&individual[dob][month]=1&individual[dob][year]=1901&individual[address][line1]=address_full_match&individual[address][city]=Gibraltar&individual[address][postal_code]=GX11+1AA&individual[address][country]=GI&individual[id_number]=000000000&bank_account[country]=GI&bank_account[currency]=gbp&bank_account[account_number]=000<STRONGBOX_GENERAL_PASSWORD>5&bank_account[routing_number]=108800&settings[payouts][schedule][interval]=manual&settings[payouts][debit_negative_balances]=true
+      string: type=custom&requested_capabilities[0]=card_payments&requested_capabilities[1]=transfers&country=GI&default_currency=gbp&metadata[user_id]=6&metadata[tos_agreement_id]=RaScSuaw5E9N4hyigRthxQ%3D%3D&metadata[user_compliance_info_id]=ZhteinGv_1j-hHfK4XI23Q%3D%3D&metadata[bank_account_id]=RyeYBXDhrSEOw_3d992H8A%3D%3D&tos_acceptance[date]=1767734424&tos_acceptance[ip]=0.0.0.0&business_type=individual&business_profile[name]=&business_profile[url]=https%3A%2F%2Fvipul.gumroad.com%2F&business_profile[product_description]=&individual[email]=edgar252fcb6b_1%40gumroad.com&individual[address][country]=GI&bank_account[country]=GI&bank_account[currency]=gbp&bank_account[account_number]=000<STRONGBOX_GENERAL_PASSWORD>5&bank_account[routing_number]=108800&settings[payouts][schedule][interval]=manual&settings[payouts][debit_negative_balances]=true
     headers:
       User-Agent:
       - Stripe/v1 RubyBindings/12.5.0
@@ -14,7 +14,7 @@ http_interactions:
       Content-Type:
       - application/x-www-form-urlencoded
       Idempotency-Key:
-      - bbda12f5-6dd9-4f9d-af8c-e57dbdd12009
+      - ec9a3d04-7531-4e1b-a3fe-9c4109c8c760
       Stripe-Version:
       - '2023-10-16'
       X-Stripe-Client-User-Agent:
@@ -33,11 +33,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 06 Jan 2026 21:28:08 GMT
+      - Tue, 06 Jan 2026 21:20:28 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '6449'
+      - '7539'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -56,13 +56,13 @@ http_interactions:
       Content-Security-Policy:
       - base-uri 'none'; default-src 'none'; form-action 'none'; frame-ancestors 'none';
         img-src 'self'; script-src 'self' 'report-sample'; style-src 'self'; worker-src
-        'none'; upgrade-insecure-requests; report-uri https://q.stripe.com/csp-violation?q=rLGKg2nBpk2Z6oN2RVESVbBQC1R9KVfBCtQTE-CnWB6oqMLv_8EfNg5XCJcqqT_ruteCSh6Ve4fHv23s
+        'none'; upgrade-insecure-requests; report-uri https://q.stripe.com/csp-violation?q=AhQ4lx6lndj9YS7PGyr7uDnaixM2yGYHxq5qTPP2nLXJ4xWqSml8wKL3EIF5fyHacDl5IqN582bnKGSN
       Idempotency-Key:
-      - bbda12f5-6dd9-4f9d-af8c-e57dbdd12009
+      - ec9a3d04-7531-4e1b-a3fe-9c4109c8c760
       Original-Request:
-      - req_dS0uEd52aLNWyM
+      - req_TS2h9yg3SDyBGz
       Request-Id:
-      - req_dS0uEd52aLNWyM
+      - req_TS2h9yg3SDyBGz
       Stripe-Should-Retry:
       - 'false'
       Stripe-Version:
@@ -81,15 +81,15 @@ http_interactions:
       encoding: UTF-8
       string: |-
         {
-          "id": "acct_1SmhnNElp48oiiLR",
+          "id": "acct_1SmhfwEpYecTw45I",
           "object": "account",
           "business_profile": {
             "annual_revenue": null,
             "estimated_worker_count": null,
             "mcc": null,
             "minority_owned_business_designation": null,
-            "name": "Chuck Bartowski",
-            "product_description": "Chuck Bartowski",
+            "name": null,
+            "product_description": "",
             "specified_commercial_transactions_act_url": null,
             "support_address": null,
             "support_email": null,
@@ -107,16 +107,15 @@ http_interactions:
             "address": {
               "city": "Gibraltar",
               "country": "GI",
-              "line1": "address_full_match",
+              "line1": null,
               "line2": null,
-              "postal_code": "GX11 1AA",
+              "postal_code": null,
               "state": null
             },
             "directors_provided": true,
             "executives_provided": true,
             "name": null,
             "owners_provided": true,
-            "phone": "+10000000000",
             "tax_id_provided": false,
             "verification": {
               "document": {
@@ -142,7 +141,7 @@ http_interactions:
             "type": "application"
           },
           "country": "GI",
-          "created": 1767734886,
+          "created": 1767734426,
           "default_currency": "gbp",
           "details_submitted": false,
           "email": null,
@@ -150,9 +149,9 @@ http_interactions:
             "object": "list",
             "data": [
               {
-                "id": "ba_1SmhnNElp48oiiLRh5v8YE8V",
+                "id": "ba_1SmhfxEpYecTw45IEw9XMhtb",
                 "object": "bank_account",
-                "account": "acct_1SmhnNElp48oiiLR",
+                "account": "acct_1SmhfwEpYecTw45I",
                 "account_holder_name": null,
                 "account_holder_type": null,
                 "account_type": null,
@@ -184,7 +183,7 @@ http_interactions:
             ],
             "has_more": false,
             "total_count": 1,
-            "url": "/v1/accounts/acct_1SmhnNElp48oiiLR/external_accounts"
+            "url": "/v1/accounts/acct_1SmhfwEpYecTw45I/external_accounts"
           },
           "future_requirements": {
             "alternatives": [],
@@ -197,25 +196,25 @@ http_interactions:
             "pending_verification": []
           },
           "individual": {
-            "id": "person_1SmhnNElp48oiiLRMnWzF0yk",
+            "id": "person_1SmhfxEpYecTw45I6RTGt8cr",
             "object": "person",
-            "account": "acct_1SmhnNElp48oiiLR",
+            "account": "acct_1SmhfwEpYecTw45I",
             "address": {
               "city": "Gibraltar",
               "country": "GI",
-              "line1": "address_full_match",
+              "line1": null,
               "line2": null,
-              "postal_code": "GX11 1AA",
+              "postal_code": null,
               "state": null
             },
-            "created": 1767734886,
+            "created": 1767734425,
             "dob": {
-              "day": 1,
-              "month": 1,
-              "year": 1901
+              "day": null,
+              "month": null,
+              "year": null
             },
-            "email": "chuck@gum.com",
-            "first_name": "Chuck",
+            "email": "edgar252fcb6b_1@gumroad.com",
+            "first_name": null,
             "future_requirements": {
               "alternatives": [],
               "currently_due": [],
@@ -224,10 +223,8 @@ http_interactions:
               "past_due": [],
               "pending_verification": []
             },
-            "id_number_provided": true,
-            "last_name": "Bartowski",
+            "last_name": null,
             "metadata": {},
-            "phone": "+10000000000",
             "relationship": {
               "authorizer": false,
               "director": false,
@@ -240,13 +237,39 @@ http_interactions:
             },
             "requirements": {
               "alternatives": [],
-              "currently_due": [],
+              "currently_due": [
+                "address.line1",
+                "address.postal_code",
+                "dob.day",
+                "dob.month",
+                "dob.year",
+                "first_name",
+                "last_name",
+                "phone"
+              ],
               "errors": [],
-              "eventually_due": [],
-              "past_due": [],
+              "eventually_due": [
+                "address.line1",
+                "address.postal_code",
+                "dob.day",
+                "dob.month",
+                "dob.year",
+                "first_name",
+                "last_name",
+                "phone"
+              ],
+              "past_due": [
+                "address.line1",
+                "address.postal_code",
+                "dob.day",
+                "dob.month",
+                "dob.year",
+                "first_name",
+                "last_name",
+                "phone"
+              ],
               "pending_verification": []
             },
-            "ssn_last_4_provided": true,
             "verification": {
               "additional_document": {
                 "back": null,
@@ -262,29 +285,53 @@ http_interactions:
                 "details_code": null,
                 "front": null
               },
-              "status": "pending"
+              "status": "unverified"
             }
           },
           "metadata": {
-            "bank_account_id": "qApQX0_oiSqHvKWs2DNxLA==",
-            "tos_agreement_id": "VBytlR5AAJJCfZSRD4047w==",
-            "user_compliance_info_id": "zQg9hyW7mqTCv-yvGCQVGQ==",
-            "user_id": "3120150362011"
+            "bank_account_id": "RyeYBXDhrSEOw_3d992H8A==",
+            "tos_agreement_id": "RaScSuaw5E9N4hyigRthxQ==",
+            "user_compliance_info_id": "ZhteinGv_1j-hHfK4XI23Q==",
+            "user_id": "6"
           },
           "payouts_enabled": false,
           "requirements": {
             "alternatives": [],
             "current_deadline": null,
             "currently_due": [
-              "business_profile.mcc"
+              "business_profile.mcc",
+              "individual.address.line1",
+              "individual.address.postal_code",
+              "individual.dob.day",
+              "individual.dob.month",
+              "individual.dob.year",
+              "individual.first_name",
+              "individual.last_name",
+              "individual.phone"
             ],
             "disabled_reason": "requirements.past_due",
             "errors": [],
             "eventually_due": [
-              "business_profile.mcc"
+              "business_profile.mcc",
+              "individual.address.line1",
+              "individual.address.postal_code",
+              "individual.dob.day",
+              "individual.dob.month",
+              "individual.dob.year",
+              "individual.first_name",
+              "individual.last_name",
+              "individual.phone"
             ],
             "past_due": [
-              "business_profile.mcc"
+              "business_profile.mcc",
+              "individual.address.line1",
+              "individual.address.postal_code",
+              "individual.dob.day",
+              "individual.dob.month",
+              "individual.dob.year",
+              "individual.first_name",
+              "individual.last_name",
+              "individual.phone"
             ],
             "pending_verification": []
           },
@@ -310,12 +357,12 @@ http_interactions:
                 "avs_failure": false,
                 "cvc_failure": false
               },
-              "statement_descriptor_prefix": "CHUCK BART",
+              "statement_descriptor_prefix": "VIPUL.GUMR",
               "statement_descriptor_prefix_kana": null,
               "statement_descriptor_prefix_kanji": null
             },
             "dashboard": {
-              "display_name": "Chuck Bartowski",
+              "display_name": "vipul.gumroad",
               "timezone": "Etc/UTC"
             },
             "invoices": {
@@ -323,7 +370,7 @@ http_interactions:
               "hosted_payment_method_save": "offer"
             },
             "payments": {
-              "statement_descriptor": "CHUCK BARTOWSKI",
+              "statement_descriptor": "VIPUL.GUMROAD.COM",
               "statement_descriptor_kana": null,
               "statement_descriptor_kanji": null
             },
@@ -339,11 +386,11 @@ http_interactions:
             "sepa_debit_payments": {}
           },
           "tos_acceptance": {
-            "date": 1427846400,
-            "ip": "54.234.242.13",
+            "date": 1767734424,
+            "ip": "0.0.0.0",
             "user_agent": null
           },
           "type": "custom"
         }
-  recorded_at: Tue, 06 Jan 2026 21:28:08 GMT
+  recorded_at: Tue, 06 Jan 2026 21:20:28 GMT
 recorded_with: VCR 6.2.0
