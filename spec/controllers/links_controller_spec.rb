@@ -559,6 +559,34 @@ describe LinksController, :vcr, inertia: true do
           expect(response).to redirect_to(bundle_path(bundle.external_id))
         end
       end
+
+      describe "Inertia tab routing" do
+        it "renders Products/Edit/Product component by default" do
+          get :edit, params: { id: product.unique_permalink }
+          expect(inertia).to render_component("Products/Edit/Product")
+        end
+
+        it "renders Products/Edit/Content component for content tab" do
+          get :edit, params: { id: product.unique_permalink, other: "content" }
+          expect(inertia).to render_component("Products/Edit/Content")
+        end
+
+        it "renders Products/Edit/Share component for share tab" do
+          get :edit, params: { id: product.unique_permalink, other: "share" }
+          expect(inertia).to render_component("Products/Edit/Share")
+        end
+
+        it "renders Products/Edit/Receipt component for receipt tab" do
+          get :edit, params: { id: product.unique_permalink, other: "receipt" }
+          expect(inertia).to render_component("Products/Edit/Receipt")
+        end
+
+        it "passes edit_props and dropbox_app_key to all tabs" do
+          get :edit, params: { id: product.unique_permalink }
+          expect(inertia.props[:edit_props]).to be_present
+          expect(inertia.props[:dropbox_app_key]).to eq(DROPBOX_PICKER_API_KEY)
+        end
+      end
     end
 
     describe "PUT update" do
