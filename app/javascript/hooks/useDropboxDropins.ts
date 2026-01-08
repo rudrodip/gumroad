@@ -39,9 +39,7 @@ const loadDropboxScript = (appKey: string): Promise<void> => {
 };
 
 export function useDropboxDropins(appKey: string | null | undefined) {
-  const [isLoaded, setIsLoaded] = React.useState(
-    typeof window !== "undefined" && "Dropbox" in window
-  );
+  const [isLoaded, setIsLoaded] = React.useState(typeof window !== "undefined" && "Dropbox" in window);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
 
@@ -63,23 +61,21 @@ export function useDropboxDropins(appKey: string | null | undefined) {
   const choose = React.useCallback(
     (options: Parameters<typeof Dropbox.choose>[0]) => {
       if (!isLoaded) {
-        console.error("Dropbox Drop-ins not loaded");
-        return;
+        throw new Error("Dropbox Drop-ins not loaded");
       }
       window.Dropbox.choose(options);
     },
-    [isLoaded]
+    [isLoaded],
   );
 
   const save = React.useCallback(
     (options: Parameters<typeof Dropbox.save>[0]) => {
       if (!isLoaded) {
-        console.error("Dropbox Drop-ins not loaded");
-        return;
+        throw new Error("Dropbox Drop-ins not loaded");
       }
       window.Dropbox.save(options);
     },
-    [isLoaded]
+    [isLoaded],
   );
 
   return { isLoaded, isLoading, error, choose, save };

@@ -186,6 +186,9 @@ export const ProductEditContext = React.createContext<{
   availableCountries: ShippingCountry[];
   saving: boolean;
   save: () => Promise<void>;
+  publishing: boolean;
+  publish: () => void;
+  unpublish: () => void;
   googleClientId: string;
   googleCalendarEnabled: boolean;
   seller_refund_policy_enabled: boolean;

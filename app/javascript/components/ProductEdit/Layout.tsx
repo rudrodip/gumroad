@@ -2,9 +2,7 @@ import { Link, router } from "@inertiajs/react";
 import cx from "classnames";
 import * as React from "react";
 
-import { setProductPublished } from "$app/data/publish_product";
 import { classNames } from "$app/utils/classNames";
-import { assertResponseError } from "$app/utils/request";
 
 import { Button, NavigationButton } from "$app/components/Button";
 import { CopyToClipboard } from "$app/components/CopyToClipboard";
@@ -139,32 +137,10 @@ export const Layout = ({
   showBorder?: boolean;
   showNavigationButton?: boolean;
 }) => {
-  const { product, updateProduct, uniquePermalink, saving, save } = useProductEditContext();
+  const { product, uniquePermalink, saving, save, publishing, publish, unpublish } = useProductEditContext();
 
   const url = useProductUrl();
   const checkoutUrl = useProductUrl({ wanted: true });
-
-  const [isPublishing, setIsPublishing] = React.useState(false);
-  const setPublished = async (published: boolean) => {
-    try {
-      setIsPublishing(true);
-      await save();
-      await setProductPublished(uniquePermalink, published);
-      updateProduct({ is_published: published });
-      showAlert(published ? "Published!" : "Unpublished!", "success");
-      if (currentTab === "share") {
-        if (product.native_type === "coffee")
-          router.visit(Routes.edit_link_path(uniquePermalink), { preserveScroll: true });
-        else router.visit(Routes.edit_link_content_path(uniquePermalink), { preserveScroll: true });
-      } else if (published) {
-        router.visit(Routes.edit_link_share_path(uniquePermalink), { preserveScroll: true });
-      }
-    } catch (e) {
-      assertResponseError(e);
-      showAlert(e.message, "error", { html: true });
-    }
-    setIsPublishing(false);
-  };
 
   const isUploadingFile = (file: FileEntry | SubtitleFile) =>
     file.status.type === "unsaved" && file.status.uploadStatus.type === "uploading";
@@ -173,7 +149,7 @@ export const Layout = ({
     product.files.some((file) => isUploadingFile(file) || file.subtitle_files.some(isUploadingFile));
   const imageSettings = useImageUploadSettings();
   const isUploadingFilesOrImages = isLoading || isUploadingFiles || !!imageSettings?.isUploading;
-  const isBusy = isUploadingFilesOrImages || saving || isPublishing;
+  const isBusy = isUploadingFilesOrImages || saving || publishing;
   const saveButtonTooltip = isUploadingFiles
     ? "Files are still uploading..."
     : isUploadingFilesOrImages
@@ -229,8 +205,8 @@ export const Layout = ({
         actions={
           product.is_published ? (
             <>
-              <Button disabled={isBusy} onClick={() => void setPublished(false)}>
-                {isPublishing ? "Unpublishing..." : "Unpublish"}
+              <Button disabled={isBusy} onClick={unpublish}>
+                {publishing ? "Unpublishing..." : "Unpublish"}
               </Button>
               {saveButton}
               <CopyToClipboard text={url} copyTooltip="Copy product URL">
@@ -248,7 +224,11 @@ export const Layout = ({
             <Button
               color="primary"
               disabled={isBusy}
-              onClick={() => void save().then(() => router.visit(Routes.edit_link_content_path(uniquePermalink), { preserveScroll: true }))}
+              onClick={() =>
+                void save().then(() =>
+                  router.visit(`${Routes.edit_link_path(uniquePermalink)}/content`, { preserveScroll: true }),
+                )
+              }
             >
               {saving ? "Saving changes..." : "Save and continue"}
             </Button>
@@ -256,8 +236,8 @@ export const Layout = ({
             <>
               {saveButton}
               <WithTooltip tip={saveButtonTooltip}>
-                <Button color="accent" disabled={isBusy} onClick={() => void setPublished(true)}>
-                  {isPublishing ? "Publishing..." : "Publish and continue"}
+                <Button color="accent" disabled={isBusy} onClick={publish}>
+                  {publishing ? "Publishing..." : "Publish and continue"}
                 </Button>
               </WithTooltip>
             </>
@@ -278,19 +258,19 @@ export const Layout = ({
             </Tab>
             {!isCoffee ? (
               <Tab asChild isSelected={currentTab === "content"}>
-                <Link href={Routes.edit_link_content_path(uniquePermalink)} preserveScroll onClick={onTabClick}>
+                <Link href={`${Routes.edit_link_path(uniquePermalink)}/content`} preserveScroll onClick={onTabClick}>
                   Content
                 </Link>
               </Tab>
             ) : null}
             <Tab asChild isSelected={currentTab === "receipt"}>
-              <Link href={Routes.edit_link_receipt_path(uniquePermalink)} preserveScroll onClick={onTabClick}>
+              <Link href={`${Routes.edit_link_path(uniquePermalink)}/receipt`} preserveScroll onClick={onTabClick}>
                 Receipt
               </Link>
             </Tab>
             <Tab asChild isSelected={currentTab === "share"}>
               <Link
-                href={Routes.edit_link_share_path(uniquePermalink)}
+                href={`${Routes.edit_link_path(uniquePermalink)}/share`}
                 preserveScroll
                 onClick={(evt) => {
                   onTabClick(evt, () => {

@@ -10,7 +10,13 @@ export const ReceiptTab = ({ currentTab }: { currentTab: ProductEditTab }) => {
   const { product, updateProduct } = useProductEditContext();
 
   return (
-    <Layout currentTab={currentTab} preview={<ReceiptPreview />} previewScaleFactor={1} showBorder={false} showNavigationButton={false}>
+    <Layout
+      currentTab={currentTab}
+      preview={<ReceiptPreview />}
+      previewScaleFactor={1}
+      showBorder={false}
+      showNavigationButton={false}
+    >
       <div className="squished">
         <form>
           <section className="p-4! md:p-8!">

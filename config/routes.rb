@@ -685,10 +685,8 @@ Rails.application.routes.draw do
 
     # TODO: move these within resources :products block above
     get "/products/paged", to: "links#products_paged", as: :products_paged
-    get "/products/:id/edit", to: "links#edit", as: :edit_link, defaults: { tab: "product" }
-    get "/products/:id/edit/content", to: "links#edit", as: :edit_link_content, defaults: { tab: "content" }
-    get "/products/:id/edit/receipt", to: "links#edit", as: :edit_link_receipt, defaults: { tab: "receipt" }
-    get "/products/:id/edit/share", to: "links#edit", as: :edit_link_share, defaults: { tab: "share" }
+    get "/products/:id/edit", to: "links#edit", as: :edit_link
+    get "/products/:id/edit/*other", to: "links#edit"
     get "/products/:id/card", to: "links#card", as: :product_card
     get "/products/search", to: "links#search"
 

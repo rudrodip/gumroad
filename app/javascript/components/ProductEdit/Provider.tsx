@@ -1,5 +1,6 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { DirectUpload } from "@rails/activestorage";
+import { Editor, findChildren } from "@tiptap/core";
 import { isEqual } from "lodash-es";
 import * as React from "react";
 import { cast } from "ts-safe-cast";
@@ -13,16 +14,13 @@ import { ALLOWED_EXTENSIONS } from "$app/utils/file";
 import { assertResponseError, request } from "$app/utils/request";
 
 import { Seller } from "$app/components/Product";
-import { ContentTab } from "$app/components/ProductEdit/ContentTab";
-import { getDownloadUrl } from "$app/components/ProductEdit/ContentTab/FileEmbed";
-import { Page } from "$app/components/ProductEdit/ContentTab/PageTab";
-import { FileEmbed } from "$app/components/ProductEdit/ContentTab/FileEmbed";
-import { extensions } from "$app/components/ProductEdit/ContentTab";
-import { type ProductEditTab } from "$app/components/ProductEdit/Layout";
-import { ProductTab } from "$app/components/ProductEdit/ProductTab";
-import { ReceiptTab } from "$app/components/ProductEdit/ReceiptTab";
-import { RefundPolicy } from "$app/components/ProductEdit/RefundPolicy";
-import { ShareTab } from "$app/components/ProductEdit/ShareTab";
+import { ImageUploadSettingsContext, baseEditorOptions } from "$app/components/RichTextEditor";
+import { showAlert } from "$app/components/server-components/Alert";
+
+import { extensions } from "./ContentTab";
+import { getDownloadUrl, FileEmbed } from "./ContentTab/FileEmbed";
+import { Page } from "./ContentTab/PageTab";
+import { RefundPolicy } from "./RefundPolicy";
 import {
   ProductEditContext,
   Product,
@@ -30,12 +28,9 @@ import {
   ExistingFileEntry,
   ShippingCountry,
   ContentUpdates,
-} from "$app/components/ProductEdit/state";
-import { ImageUploadSettingsContext, baseEditorOptions } from "$app/components/RichTextEditor";
-import { showAlert } from "$app/components/server-components/Alert";
-import { Editor, findChildren } from "@tiptap/core";
+} from "./state";
 
-type PageProps = {
+export type ProductEditPageProps = {
   edit_props: {
     product: Product;
     id: string;
@@ -65,7 +60,6 @@ type PageProps = {
     cancellation_discounts_enabled: boolean;
   };
   dropbox_app_key: string | null;
-  current_tab: ProductEditTab;
 };
 
 const pagesHaveSameContent = (pages1: Page[], pages2: Page[]): boolean => isEqual(pages1, pages2);
@@ -86,8 +80,8 @@ const findUpdatedContent = (product: Product, lastSavedProduct: Product) => {
   };
 };
 
-function Edit() {
-  const { edit_props, dropbox_app_key, current_tab } = usePage<PageProps>().props;
+export const ProductEditProvider = ({ children }: { children: React.ReactNode }) => {
+  const { edit_props, dropbox_app_key } = usePage<ProductEditPageProps>().props;
 
   const [product, setProduct] = React.useState(edit_props.product);
   const [contentUpdates, setContentUpdates] = React.useState<ContentUpdates>(null);
@@ -103,10 +97,22 @@ function Edit() {
       return updated;
     });
 
-  // Inertia form for submissions
   const form = useForm({});
+  const publishForm = useForm({});
 
   const [imagesUploading, setImagesUploading] = React.useState<Set<File>>(new Set());
+
+  const publish = () => {
+    publishForm.post(Routes.publish_link_path(edit_props.unique_permalink), {
+      preserveScroll: true,
+    });
+  };
+
+  const unpublish = () => {
+    publishForm.post(Routes.unpublish_link_path(edit_props.unique_permalink), {
+      preserveScroll: true,
+    });
+  };
 
   const save = async () => {
     // Prepare product data - filter files based on rich content
@@ -142,7 +148,6 @@ function Edit() {
         newlyAdded ? { ...availability, id: null } : availability,
       ),
       installment_plan: filteredProduct.allow_installment_plan ? filteredProduct.installment_plan : null,
-      current_tab,
     }));
 
     return new Promise<void>((resolve, reject) => {
@@ -150,10 +155,11 @@ function Edit() {
         preserveScroll: true,
         preserveState: true,
         onSuccess: (page) => {
-          const flash = (page.props as { flash?: { warning?: string; alert?: string; notice?: string } }).flash;
+          const flash = page.props.flash;
+          const warning = flash && typeof flash === "object" && "warning" in flash ? String(flash.warning) : null;
 
-          if (flash?.warning) {
-            showAlert(flash.warning, "warning");
+          if (warning) {
+            showAlert(warning, "warning");
           } else {
             const { contentUpdatedVariantIds, sharedContentUpdated } = findUpdatedContent(
               product,
@@ -212,6 +218,9 @@ function Edit() {
       availableCountries: edit_props.available_countries,
       saving: form.processing,
       save,
+      publishing: publishForm.processing,
+      publish,
+      unpublish,
       googleClientId: edit_props.google_client_id,
       googleCalendarEnabled: edit_props.google_calendar_enabled,
       seller_refund_policy_enabled: edit_props.seller_refund_policy_enabled,
@@ -220,11 +229,9 @@ function Edit() {
       dropboxAppKey: dropbox_app_key,
       contentUpdates,
       setContentUpdates,
-      filesById: new Map(
-        product.files.map((file) => [file.id, { ...file, url: getDownloadUrl(edit_props.id, file) }]),
-      ),
+      filesById: new Map(product.files.map((file) => [file.id, { ...file, url: getDownloadUrl(edit_props.id, file) }])),
     }),
-    [product, existingFiles, currencyType, form.processing, contentUpdates, dropbox_app_key],
+    [product, existingFiles, currencyType, form.processing, publishForm.processing, contentUpdates, dropbox_app_key],
   );
 
   const imageSettings = React.useMemo(
@@ -262,28 +269,9 @@ function Edit() {
     [imagesUploading.size],
   );
 
-  const renderTabContent = () => {
-    switch (current_tab) {
-      case "product":
-        return <ProductTab currentTab={current_tab} />;
-      case "content":
-        return <ContentTab currentTab={current_tab} />;
-      case "receipt":
-        return <ReceiptTab currentTab={current_tab} />;
-      case "share":
-        return <ShareTab currentTab={current_tab} />;
-      default:
-        return <ProductTab currentTab="product" />;
-    }
-  };
-
   return (
     <ProductEditContext.Provider value={contextValue}>
-      <ImageUploadSettingsContext.Provider value={imageSettings}>
-        {renderTabContent()}
-      </ImageUploadSettingsContext.Provider>
+      <ImageUploadSettingsContext.Provider value={imageSettings}>{children}</ImageUploadSettingsContext.Provider>
     </ProductEditContext.Provider>
   );
-}
-
-export default Edit;
+};

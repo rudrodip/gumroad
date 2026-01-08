@@ -82,7 +82,11 @@ export const ProductTab = ({ currentTab }: { currentTab: ProductEditTab }) => {
   if (!currentSeller) return null;
 
   return (
-    <Layout currentTab={currentTab} preview={<ProductPreview showRefundPolicyModal={showRefundPolicyPreview} />} isLoading={isUploading}>
+    <Layout
+      currentTab={currentTab}
+      preview={<ProductPreview showRefundPolicyModal={showRefundPolicyPreview} />}
+      isLoading={isUploading}
+    >
       <div className="squished">
         <form>
           <section className="p-4! md:p-8!">
